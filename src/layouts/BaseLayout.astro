@@ -1,0 +1,83 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'MoveMatters — Your move, handled.',
+  description = 'Stop wondering what you\'re forgetting. MoveMatters builds your personalized moving checklist and walks you through it — one task at a time.',
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,300..500;1,9..144,300..400&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="nav" id="nav">
+      <div class="wrap nav-inner">
+        <a href="/" class="logo" aria-label="MoveMatters home">
+          <span class="logo-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 7l9-4 9 4-9 4-9-4z"></path>
+              <path d="M3 7v10l9 4 9-4V7"></path>
+              <path d="M12 11v10"></path>
+            </svg>
+          </span>
+          <span class="logo-word">Move<span class="accent">Matters</span></span>
+        </a>
+        <a href="/#waitlist" class="btn btn-primary btn-arrow">
+          Get Early Access
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"></path>
+            <path d="M13 6l6 6-6 6"></path>
+          </svg>
+        </a>
+      </div>
+    </header>
+
+    <slot />
+
+    <footer>
+      <div class="wrap footer-inner">
+        <div class="footer-left">
+          <a href="/" class="logo" style="font-size: 18px;">
+            <span class="logo-mark" aria-hidden="true" style="width:24px; height:24px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 7l9-4 9 4-9 4-9-4z"></path>
+                <path d="M3 7v10l9 4 9-4V7"></path>
+                <path d="M12 11v10"></path>
+              </svg>
+            </span>
+            <span class="logo-word">Move<span class="accent">Matters</span></span>
+          </a>
+          <div class="footer-tag">Your move, handled.</div>
+        </div>
+        <div class="footer-center">© 2026 MoveMatters</div>
+        <div class="footer-right">
+          <a href="#" class="footer-link">Privacy Policy</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const nav = document.getElementById('nav');
+      const onScroll = () => nav?.classList.toggle('scrolled', window.scrollY > 8);
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    </script>
+  </body>
+</html>

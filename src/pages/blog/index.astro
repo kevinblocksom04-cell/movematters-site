@@ -1,0 +1,43 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/blog.css';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<BaseLayout
+  title="Moving Tips & Resources — MoveMatters"
+  description="Practical moving advice, checklists, and guides from the MoveMatters team."
+>
+  <main class="blog-index">
+    <div class="wrap">
+      <div class="blog-index-header">
+        <div class="eyebrow">From the team</div>
+        <h1>Moving Tips &amp; Resources</h1>
+        <p class="blog-index-sub">Practical guides and checklists to make your move smoother.</p>
+      </div>
+
+      <div class="posts-grid">
+        {posts.map(post => (
+          <a href={`/blog/${post.slug}`} class="post-card">
+            <div class="post-card-meta">
+              <time datetime={post.data.pubDate.toISOString()}>
+                {post.data.pubDate.toLocaleDateString('en-US', {
+                  month: 'long',
+                  day: 'numeric',
+                  year: 'numeric',
+                })}
+              </time>
+            </div>
+            <h2 class="post-card-title">{post.data.title}</h2>
+            <p class="post-card-desc">{post.data.description}</p>
+            <span class="post-card-link">Read more →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </main>
+</BaseLayout>
