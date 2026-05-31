@@ -1,11 +1,10 @@
 ---
-import { getCollection } from 'astro:content';
+import { client } from '../../lib/sanity';
+import { ALL_POSTS_QUERY } from '../../lib/queries';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import '../../styles/blog.css';
 
-const posts = (await getCollection('blog')).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-);
+const posts = await client.fetch(ALL_POSTS_QUERY);
 ---
 
 <BaseLayout
@@ -21,22 +20,25 @@ const posts = (await getCollection('blog')).sort(
       </div>
 
       <div class="posts-grid">
-        {posts.map(post => (
-          <a href={`/blog/${post.slug}`} class="post-card">
-            <div class="post-card-meta">
-              <time datetime={post.data.pubDate.toISOString()}>
-                {post.data.pubDate.toLocaleDateString('en-US', {
-                  month: 'long',
-                  day: 'numeric',
-                  year: 'numeric',
-                })}
-              </time>
-            </div>
-            <h2 class="post-card-title">{post.data.title}</h2>
-            <p class="post-card-desc">{post.data.description}</p>
-            <span class="post-card-link">Read more →</span>
-          </a>
-        ))}
+        {posts.map((post: { slug: string; publishedAt: string; title: string; description: string }) => {
+          const pubDate = new Date(post.publishedAt);
+          return (
+            <a href={`/blog/${post.slug}`} class="post-card">
+              <div class="post-card-meta">
+                <time datetime={pubDate.toISOString()}>
+                  {pubDate.toLocaleDateString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })}
+                </time>
+              </div>
+              <h2 class="post-card-title">{post.title}</h2>
+              <p class="post-card-desc">{post.description}</p>
+              <span class="post-card-link">Read more →</span>
+            </a>
+          );
+        })}
       </div>
     </div>
   </main>

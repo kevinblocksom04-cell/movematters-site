@@ -1,19 +1,28 @@
 ---
-import { getCollection } from 'astro:content';
+import { client } from '../../lib/sanity';
+import { ALL_POSTS_FULL_QUERY } from '../../lib/queries';
 import BlogLayout from '../../layouts/BlogLayout.astro';
+import { toHTML } from '@portabletext/to-html';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
-  return posts.map(post => ({
-    params: { slug: post.slug },
+  const posts = await client.fetch(ALL_POSTS_FULL_QUERY);
+  return posts.map((post: Record<string, unknown>) => ({
+    params: { slug: post.slug as string },
     props: { post },
   }));
 }
 
 const { post } = Astro.props;
-const { Content } = await post.render();
+const bodyHtml = post.body ? toHTML(post.body) : '';
+const pubDate = new Date(post.publishedAt as string);
 ---
 
-<BlogLayout {...post.data}>
-  <Content />
+<BlogLayout
+  title={post.title as string}
+  description={post.description as string}
+  pubDate={pubDate}
+  author={post.author as string | undefined}
+  tags={post.tags as string[] | undefined}
+>
+  <Fragment set:html={bodyHtml} />
 </BlogLayout>
